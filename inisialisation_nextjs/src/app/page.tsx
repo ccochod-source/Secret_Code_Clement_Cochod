@@ -3,7 +3,19 @@
 import { useState } from 'react';
 
 export default function Home() {
-  const [showSecret, setShowSecret] = useState(false);
+  const [secret, setSecret] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const loadSecret = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/secret');
+      const json = await res.json();
+      setSecret(json.secret);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main
@@ -19,24 +31,23 @@ export default function Home() {
       }}
     >
       <button
-        onClick={() => setShowSecret(!showSecret)}
+        onClick={loadSecret}
+        disabled={loading}
         style={{
           padding: '14px 28px',
           fontSize: '18px',
-          cursor: 'pointer',
+          cursor: loading ? 'not-allowed' : 'pointer',
           backgroundColor: '#0070f3',
           color: 'white',
           border: 'none',
           borderRadius: '8px',
         }}
       >
-        Afficher le secret
+        {loading ? 'Chargement…' : 'Afficher le secret'}
       </button>
 
-      {showSecret && (
-        <div style={{ fontSize: '22px', textAlign: 'center' }}>
-          {process.env.NEXT_PUBLIC_MON_TEXT_SECRET}
-        </div>
+      {secret && (
+        <div style={{ fontSize: '22px', textAlign: 'center' }}>{secret}</div>
       )}
     </main>
   );
