@@ -1,7 +1,12 @@
+'use client';
+
+import { useState } from 'react';
 import Image from "next/image";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const [showSecret, setShowSecret] = useState(false);
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -59,6 +64,25 @@ export default function Home() {
           >
             Documentation
           </a>
+          <button
+            onClick={() => setShowSecret(!showSecret)}
+            style={{
+              padding: '10px 20px',
+              fontSize: '16px',
+              cursor: 'pointer',
+              backgroundColor: '#0070f3',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+            }}
+          >
+            Afficher le secret
+          </button>
+          {showSecret && (
+            <p style={{ fontSize: '18px', marginTop: '20px' }}>
+              {process.env.NEXT_PUBLIC_MON_TEXT_SECRET}
+            </p>
+          )}
         </div>
       </main>
     </div>
